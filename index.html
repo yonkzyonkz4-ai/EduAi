@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduAI · belajar dari SD - SMA</title>
+    <meta name="description" content="Platform belajar interaktif berbasis AI. Gratis, tema gelap, untuk SD sampai SMA. Pilih gaya: On Point, Cepat & Kreatif, atau Seimbang. Masukkan link YouTube atau file MP3/MP4.">
+    <!-- biar keindex google (SEO friendly) -->
+    <meta name="robots" content="index, follow">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: #0b0b0f;
+            color: #e5e5e5;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            padding: 1.5rem;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 600;
+            background: linear-gradient(145deg, #c0a0ff, #9f8bef);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.25rem;
+        }
+        .subhead {
+            color: #a0a0b0;
+            margin-bottom: 2rem;
+            border-left: 4px solid #7c5cf0;
+            padding-left: 1rem;
+        }
+        /* tiga kartu mode */
+        .mode-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin: 2.5rem 0 2rem;
+        }
+        .mode-card {
+            flex: 1 1 180px;
+            background: #17171f;
+            border-radius: 28px;
+            padding: 1.6rem 1.2rem;
+            border: 1px solid #2c2c3a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.5);
+        }
+        .mode-card:hover {
+            background: #1f1f2b;
+            border-color: #7b5ef0;
+            transform: translateY(-3px);
+        }
+        .mode-card.active {
+            border-color: #a58bff;
+            background: #232231;
+            box-shadow: 0 0 0 2px #6d4fc9 inset, 0 8px 0 #0b0b0f;
+        }
+        .mode-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .mode-card p {
+            color: #aaaabb;
+            font-size: 0.9rem;
+        }
+        /* tab youtube / file */
+        .tab-bar {
+            display: flex;
+            gap: 0.5rem;
+            background: #13131a;
+            padding: 0.5rem;
+            border-radius: 60px;
+            width: fit-content;
+            margin: 2rem 0 1.5rem;
+            border: 1px solid #292938;
+        }
+        .tab {
+            padding: 0.7rem 2rem;
+            border-radius: 40px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: 0.2s;
+            color: #b0b0c0;
+            border: none;
+            background: transparent;
+            font-size: 1rem;
+        }
+        .tab.active {
+            background: #2f2f42;
+            color: white;
+            box-shadow: 0 2px 8px #1f1f3a;
+        }
+        /* panel konten */
+        .panel {
+            background: #15151d;
+            border-radius: 32px;
+            padding: 2rem;
+            border: 1px solid #2a2a38;
+            margin-top: 0.5rem;
+            backdrop-filter: blur(2px);
+        }
+        .hidden {
+            display: none !important;
+        }
+        input, button, textarea {
+            font-family: inherit;
+            border-radius: 20px;
+        }
+        .input-field {
+            width: 100%;
+            background: #20202b;
+            border: 1px solid #3a3a4d;
+            color: white;
+            padding: 1rem 1.5rem;
+            font-size: 1rem;
+            border-radius: 50px;
+            outline: none;
+            transition: 0.2s;
+            margin: 0.8rem 0 1.2rem;
+        }
+        .input-field:focus {
+            border-color: #9c84ef;
+            box-shadow: 0 0 0 3px rgba(156,132,239,0.2);
+        }
+        .btn-primary {
+            background: #8a72e0;
+            border: none;
+            color: #0b0b0f;
+            font-weight: 600;
+            padding: 0.9rem 2.2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 6px 0 #4a3b7a;
+            margin-bottom: 6px;
+        }
+        .btn-primary:active {
+            transform: translateY(4px);
+            box-shadow: 0 2px 0 #4a3b7a;
+        }
+        .btn-primary:hover {
+            background: #9f8aef;
+        }
+        .action-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1.5rem 0 1rem;
+        }
+        .action-btn {
+            background: #24242f;
+            border: 1px solid #3d3d52;
+            color: #ddd;
+            padding: 0.7rem 1.6rem;
+            border-radius: 40px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.15s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .action-btn.active {
+            background: #6d4fc9;
+            border-color: #b59eff;
+            color: white;
+            box-shadow: 0 0 12px #6d4fc9;
+        }
+        .player-container {
+            background: #0e0e14;
+            border-radius: 24px;
+            padding: 1.2rem;
+            margin: 1.2rem 0;
+            border: 1px solid #343446;
+        }
+        iframe, video, audio {
+            border-radius: 20px;
+            width: 100%;
+            max-height: 380px;
+            border: none;
+        }
+        audio {
+            background: #1e1e2a;
+        }
+        textarea {
+            width: 100%;
+            background: #1b1b26;
+            border: 1px solid #3e3e56;
+            color: white;
+            padding: 1.2rem;
+            border-radius: 24px;
+            font-size: 1rem;
+            resize: vertical;
+            margin-top: 1rem;
+        }
+        .footer-note {
+            text-align: center;
+            color: #5f5f73;
+            margin-top: 3.5rem;
+            font-size: 0.95rem;
+            border-top: 1px dashed #2e2e3e;
+            padding-top: 2rem;
+        }
+        .flex-row {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .info-chip {
+            background: #1f1f2c;
+            padding: 0.4rem 1.2rem;
+            border-radius: 30px;
+            color: #b9b9dc;
+            font-size: 0.9rem;
+            border: 1px solid #3f3f58;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🧠 eduAI · belajar tanpa sekat</h1>
+    <div class="subhead">SD · SMP · SMA — pilih gaya, masukkan sumber, dan ekstrak caramu belajar.</div>
+
+    <!-- TIGA PILIHAN UTAMA: on point, cepat & kreatif, seimbang -->
+    <div class="mode-grid" id="modeSelector">
+        <div class="mode-card" data-mode="onpoint">
+            <h3>🎯 On point</h3>
+            <p>Langsung inti, padat, tepat sasaran. Cocok buat review.</p>
+        </div>
+        <div class="mode-card" data-mode="cepat">
+            <h3>⚡ Cepat & kreatif</h3>
+            <p>Out of the box, visual engaging, learning hack.</p>
+        </div>
+        <div class="mode-card" data-mode="seimbang">
+            <h3>⚖️ Seimbang</h3>
+            <p>Teori + praktik, ritme nyaman, mendalam.</p>
+        </div>
+    </div>
+
+    <!-- TAB : LINK YOUTUBE ATAU FILE -->
+    <div class="tab-bar" id="tabBar">
+        <button class="tab active" data-tab="youtube">🔗 YouTube</button>
+        <button class="tab" data-tab="file">📁 File (MP3, MP4, ...)</button>
+    </div>
+
+    <!-- PANEL YOUTUBE (default tampil) -->
+    <div id="youtubePanel" class="panel">
+        <h2 style="font-size: 1.6rem; margin-bottom: 0.5rem;">🎬 Belajar dari video</h2>
+        <p style="color:#b2b2cd;">Tempel link YouTube, lalu pilih aktivitas: dengar, catat, atau tonton.</p>
+        <input type="text" id="youtubeLink" class="input-field" placeholder="https://youtu.be/... atau https://youtube.com/watch?v=..." value="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+        <div class="flex-row">
+            <button class="btn-primary" id="loadYoutube">🚀 Muat video</button>
+            <span class="info-chip">gratis, tanpa iklan</span>
+        </div>
+
+        <!-- kontainer setelah video dimuat -->
+        <div id="videoContainer" class="hidden">
+            <div class="player-container" id="player"></div>
+            <div class="action-group" id="youtubeActionButtons">
+                <button class="action-btn" data-action="mendengar">👂 Mendengar</button>
+                <button class="action-btn" data-action="mencatat">📝 Mencatat</button>
+                <button class="action-btn" data-action="melihat">👀 Melihat</button>
+            </div>
+            <div id="catatanAreaYt" class="hidden">
+                <textarea id="ytNote" placeholder="Tulis catatan atau poin penting ..."></textarea>
+                <small style="color:#7a7a9a;">✨ catatan tersimpan otomatis di browser</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANEL FILE (hidden awal) -->
+    <div id="filePanel" class="panel hidden">
+        <h2 style="font-size: 1.6rem;">📂 Belajar dari file lokal</h2>
+        <p style="color:#b2b2cd;">Upload MP3, MP4, M4A, WebM — langsung putar dan catat.</p>
+        <input type="file" id="fileInput" class="input-field" accept="audio/*,video/*">
+        <div id="fileContainer" class="hidden">
+            <div class="player-container" id="filePlayer"></div>
+            <div class="action-group" id="fileActionButtons">
+                <button class="action-btn" data-action="mendengar">👂 Mendengar</button>
+                <button class="action-btn" data-action="mencatat">📝 Mencatat</button>
+                <button class="action-btn" data-action="melihat">👀 Melihat</button>
+            </div>
+            <div id="catatanAreaFile" class="hidden">
+                <textarea id="fileNote" placeholder="Tulis catatan dari file ..."></textarea>
+                <small style="color:#7a7a9a;">💾 catatan disimpan di localStorage</small>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer-note">
+        ⚡ EduAI — dirancang untuk pelajar Indonesia. semua fitur gratis · akses kapan saja
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ----- ELEMEN GLOBAL -----
+        const modeCards = document.querySelectorAll('.mode-card');
+        const tabs = document.querySelectorAll('.tab');
+        const youtubePanel = document.getElementById('youtubePanel');
+        const filePanel = document.getElementById('filePanel');
+        const youtubeLinkInput = document.getElementById('youtubeLink');
+        const loadYoutubeBtn = document.getElementById('loadYoutube');
+        const playerDiv = document.getElementById('player');
+        const videoContainer = document.getElementById('videoContainer');
+        const fileInput = document.getElementById('fileInput');
+        const fileContainer = document.getElementById('fileContainer');
+        const filePlayerDiv = document.getElementById('filePlayer');
+        const catatanAreaYt = document.getElementById('catatanAreaYt');
+        const catatanAreaFile = document.getElementById('catatanAreaFile');
+        const ytNote = document.getElementById('ytNote');
+        const fileNote = document.getElementById('fileNote');
+
+        // state aktif untuk mode & action
+        let currentMode = 'onpoint'; // default
+        let currentYoutubeAction = 'melihat'; // default melihat
+        let currentFileAction = 'melihat';
+
+        // youtube video id terakhir
+        let lastVideoId = '';
+
+        // ------ MODE CARD (onpoint, cepat, seimbang) ------
+        modeCards.forEach(card => {
+            card.addEventListener('click', () => {
+                modeCards.forEach(c => c.classList.remove('active'));
+                card.classList.add('active');
+                currentMode = card.dataset.mode;
+                // bisa dipakai untuk personalisasi konten di masa depan
+                console.log('mode dipilih:', currentMode);
+            });
+        });
+        // set aktif pertama
+        document.querySelector('.mode-card[data-mode="onpoint"]').classList.add('active');
+
+        // ------ TAB (youtube / file) ------
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const target = tab.dataset.tab;
+                if (target === 'youtube') {
+                    youtubePanel.classList.remove('hidden');
+                    filePanel.classList.add('hidden');
+                } else {
+                    youtubePanel.classList.add('hidden');
+                    filePanel.classList.remove('hidden');
+                }
+            });
+        });
+
+        // ------ FUNGSI EKSTRAK YOUTUBE ID ------
+        function extractVideoId(url) {
+            const patterns = [
+                /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&\n?#]+)/,
+                /^([a-zA-Z0-9_-]{11})$/
+            ];
+            for (let p of patterns) {
+                const match = url.match(p);
+                if (match) return match[1];
+            }
+            return null;
+        }
+
+        // ------ LOAD YOUTUBE VIDEO ------
+        loadYoutubeBtn.addEventListener('click', () => {
+            const link = youtubeLinkInput.value.trim();
+            let videoId = extractVideoId(link);
+            if (!videoId && link.length === 11) videoId = link; // jika langsung ID
+            if (!videoId) {
+                alert('Link YouTube tidak dikenal. Coba link seperti: https://youtu.be/xxxx');
+                return;
+            }
+            lastVideoId = videoId;
+            // buat iframe
+            playerDiv.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?enablejsapi=1" allowfullscreen frameborder="0"></iframe>`;
+            videoContainer.classList.remove('hidden');
+            // reset action ke melihat (default)
+            setActiveYoutubeAction('melihat');
+            // sembunyikan catatan
+            catatanAreaYt.classList.add('hidden');
+            // reset catatan? biarkan
+        });
+
+        // ------ SET ACTIVE ACTION YOUTUBE + TAMPILAN ------
+        function setActiveYoutubeAction(action) {
+            currentYoutubeAction = action;
+            const btns = document.querySelectorAll('#youtubeActionButtons .action-btn');
+            btns.forEach(btn => {
+                const a = btn.dataset.action;
+                if (a === action) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            // logic tampilan berdasarkan action
+            if (action === 'mencatat') {
+                catatanAreaYt.classList.remove('hidden');
+                // saat mencatat, kita tetap tampilkan video (ukuran normal)
+                // tidak ada perubahan pada iframe
+            } else {
+                catatanAreaYt.classList.add('hidden');
+            }
+
+            // untuk mendengar vs melihat, kita tidak bisa ubah audio/video youtube secara radikal
+            // tapi kita bisa beri sedikit visual feedback (opsional)
+            if (action === 'mendengar') {
+                // mungkin beri overlay "fokus ke suara" (hanya estetik)
+                playerDiv.style.opacity = '0.9';
+                playerDiv.style.filter = 'blur(0.3px)';
+            } else if (action === 'melihat') {
+                playerDiv.style.opacity = '1';
+                playerDiv.style.filter = 'none';
+            }
+        }
+
+        // ------ EVENT ACTION BUTTON YOUTUBE ------
+        document.querySelectorAll('#youtubeActionButtons .action-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const action = e.currentTarget.dataset.action;
+                setActiveYoutubeAction(action);
+            });
+        });
+
+        // ------ FILE HANDLING (UPLOAD) ------
+        fileInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const url = URL.createObjectURL(file);
+            filePlayerDiv.innerHTML = ''; // clear
+            let playerTag;
+            if (file.type.startsWith('audio/')) {
+                playerTag = document.createElement('audio');
+                playerTag.controls = true;
+                playerTag.style.width = '100%';
+            } else {
+                playerTag = document.createElement('video');
+                playerTag.controls = true;
+                playerTag.style.width = '100%';
+                // agar tidak terlalu besar
+                playerTag.style.maxHeight = '360px';
+            }
+            playerTag.src = url;
+            filePlayerDiv.appendChild(playerTag);
+            fileContainer.classList.remove('hidden');
+
+            // reset action ke melihat
+            setActiveFileAction('melihat');
+            catatanAreaFile.classList.add('hidden');
+        });
+
+        // ------ SET ACTIVE ACTION FILE + MODIFIKASI PLAYER ------
+        function setActiveFileAction(action) {
+            currentFileAction = action;
+            const btns = document.querySelectorAll('#fileActionButtons .action-btn');
+            btns.forEach(btn => {
+                const a = btn.dataset.action;
+                if (a === action) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+
+            // ambil elemen player (audio/video)
+            const player = filePlayerDiv.querySelector('audio, video');
+            if (!player) return;
+
+            if (action === 'mencatat') {
+                catatanAreaFile.classList.remove('hidden');
+                // pastikan player tetap terlihat (kecil) agar konteks
+                player.style.display = 'block';
+            } else {
+                catatanAreaFile.classList.add('hidden');
+            }
+
+            if (action === 'mendengar') {
+                // jika video, kita bisa sembunyikan visual dengan mengecilkan atau menyembunyikan?
+                // tetapi audio tetap jalan. solusi: set display none untuk video, audio tetap jalan? 
+                // tapi jika audio player, tidak ada visual.
+                if (player.tagName === 'VIDEO') {
+                    // sembunyikan visual, tetapi audio tetap jalan (cukup sembunyikan tag? kalau display none, video berhenti di beberapa browser)
+                    // lebih baik set opacity 0 & height 0? tapi kontrol hilang. 
+                    // kita tetap tampilkan kontrol audio dengan style mini?
+                    // alternatif: ubah jadi audio-only? kita bisa buat elemen audio baru? tapi ribet.
+                    // sederhana: kita beri class agar video dikecilkan tapi tetap ada (fokus audio)
+                    player.style.opacity = '0.5';
+                    player.style.height = '80px'; // kecil
+                } else {
+                    player.style.opacity = '1';
+                    player.style.height = 'auto';
+                }
+            } else if (action === 'melihat') {
+                player.style.opacity = '1';
+                player.style.height = 'auto';
+                if (player.tagName === 'VIDEO') {
+                    player.style.maxHeight = '360px';
+                }
+            }
+        }
+
+        // event listener untuk tombol action file
+        document.querySelectorAll('#fileActionButtons .action-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const action = e.currentTarget.dataset.action;
+                setActiveFileAction(action);
+            });
+        });
+
+        // ------ SIMPAN CATATAN KE LOCALSTORAGE (opsional) ------
+        ytNote.addEventListener('input', function() {
+            if (lastVideoId) {
+                localStorage.setItem(`ytNote_${lastVideoId}`, this.value);
+            }
+        });
+
+        fileNote.addEventListener('input', function() {
+            const fileName = fileInput.files[0]?.name || 'lastfile';
+            localStorage.setItem(`fileNote_${fileName}`, this.value);
+        });
+
+        // muat catatan youtube jika ada
+        window.addEventListener('load', function() {
+            // contoh isi awal biar tidak kosong
+            if (localStorage.getItem('ytNote_demo')) {
+                ytNote.value = localStorage.getItem('ytNote_demo');
+            }
+        });
+
+        // perbaikan: ketika load video, coba muat catatan untuk videoId
+        const originalLoad = loadYoutubeBtn.click;
+        loadYoutubeBtn.addEventListener('click', function() {
+            setTimeout(() => {
+                if (lastVideoId) {
+                    const saved = localStorage.getItem(`ytNote_${lastVideoId}`);
+                    if (saved) ytNote.value = saved;
+                    else ytNote.value = '';
+                }
+            }, 100);
+        });
+
+        // demo: untuk pertama kali, tampilkan video contoh
+        window.addEventListener('load', function() {
+            // muat video default (rick roll? tapi biar ada contoh)
+            setTimeout(() => {
+                youtubeLinkInput.value = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+                loadYoutubeBtn.click();
+                // set mode mendengar / melihat dll bebas
+            }, 200);
+        });
+    })();
+</script>
+<!-- biar lebih ringan, kita tambah favicon mini -->
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎓</text></svg>">
+</body>
+</html>
